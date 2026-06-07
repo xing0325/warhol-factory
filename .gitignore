@@ -1,0 +1,7 @@
+node_modules/
+_smoke/
+*.log
+.DS_Store
+Thumbs.db
+package.json
+package-lock.json
