@@ -1,30 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="factory">
+<html lang="en" data-theme="factory" data-lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>THE SILVER FACTORY — A Warhol Machine</title>
-<meta name="description" content="Clock in and run Andy Warhol's Silver Factory: hand-pull your own silkscreen, multiply it into a repetition wall, mix fluorescent inks, sit for a Screen Test, and clock out with your edition. An unofficial interactive tribute — everything made in your browser." />
-<meta name="author" content="The Silver Factory (unofficial tribute)" />
+<meta name="description" content="Clock in and run Andy Warhol's Silver Factory: hand-pull your own silkscreen, multiply it, mix inks, sit for a Screen Test, and study his real works. An unofficial interactive tribute — everything made in your browser." />
 <meta name="color-scheme" content="light dark" />
 <meta property="og:title" content="THE SILVER FACTORY — A Warhol Machine" />
 <meta property="og:description" content="Hand-pull your own Warhol silkscreen. An interactive pop-art machine you operate." />
 <meta property="og:type" content="website" />
 
-<!-- Favicon: a tiny silkscreen soup can, inline so it needs no file -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23FBF6E9'/%3E%3Crect x='8' y='5' width='16' height='22' rx='2' fill='%23E4002B'/%3E%3Crect x='8' y='13' width='16' height='6' fill='%23FBF6E9'/%3E%3Crect x='8' y='13' width='16' height='1.6' fill='%23C9A227'/%3E%3Crect x='8' y='17.4' width='16' height='1.6' fill='%23C9A227'/%3E%3C/svg%3E" />
 
-<!-- Fonts: Anton (silkscreen poster caps), Archivo Black + Archivo (grotesque),
-     Courier Prime (the Factory's typed index-card voice), Permanent Marker (the signature scrawl) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Courier+Prime:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Courier+Prime:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Permanent+Marker&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body data-zone="default">
 
-<a class="skip-link" href="#press">Skip to the press</a>
+<a class="skip-link" href="#/press">Skip to the press</a>
 
 <!-- ===== Atmosphere: the silvered Factory walls ===== -->
 <div class="foil" aria-hidden="true">
@@ -33,29 +29,34 @@
   <div class="foil__spec" id="foilSpec"></div>
   <div class="foil__halftone"></div>
 </div>
-
-<!-- The halftone-dissolve curtain used for section "print-over" transitions -->
 <canvas class="dissolve" id="dissolve" aria-hidden="true"></canvas>
 
-<!-- Custom cursor: a Factory tool (squeegee) that morphs by zone -->
-<div class="cursor" id="cursor" aria-hidden="true">
-  <div class="cursor__tool" id="cursorTool"></div>
-</div>
+<!-- Custom cursor -->
+<div class="cursor" id="cursor" aria-hidden="true"><div class="cursor__tool" id="cursorTool"></div></div>
 <canvas class="cursor-trail" id="cursorTrail" aria-hidden="true"></canvas>
 
-<!-- ===== Fixed controls ===== -->
-<div class="controls" id="controls">
-  <button class="ctl" id="soundToggle" aria-pressed="false" title="Sound">
-    <span class="ctl__glyph" aria-hidden="true">♪</span>
-    <span class="ctl__label" data-copy="sound_off">SOUND OFF</span>
-  </button>
-  <button class="ctl" id="flashToggle" aria-pressed="false" title="Reduce flashing">
-    <span class="ctl__glyph" aria-hidden="true">✸</span>
-    <span class="ctl__label">FLASH OK</span>
-  </button>
-</div>
+<!-- ===== Top bar (rooms + controls) — shown after clock-in ===== -->
+<header class="topbar" id="topbar" aria-label="Factory floor">
+  <a class="topbar__brand" href="#/press"><span class="topbar__dot">●</span> THE&nbsp;SILVER&nbsp;FACTORY</a>
+  <nav class="topbar__rooms" id="rooms">
+    <a href="#/press"      data-room="press"      data-i18n="nav_press">The Press</a>
+    <a href="#/wall"       data-room="wall"       data-i18n="nav_wall">The Wall</a>
+    <a href="#/inklab"     data-room="inklab"     data-i18n="nav_inklab">Ink Lab</a>
+    <a href="#/screentest" data-room="screentest" data-i18n="nav_screentest">Screen Test</a>
+    <a href="#/epi"        data-room="epi"        data-i18n="nav_epi">E.P.I.</a>
+    <a href="#/capsule"    data-room="capsule"    data-i18n="nav_capsule">Time Capsule</a>
+    <a href="#/works"      data-room="works"      data-i18n="nav_works">The Works</a>
+    <a href="#/gallery"    data-room="gallery"    data-i18n="nav_gallery">Drying Rack</a>
+    <a href="#/about"      data-room="about"      data-i18n="nav_about">About</a>
+  </nav>
+  <div class="topbar__ctl">
+    <button class="ctl" id="langToggle" title="Language / 语言"><span class="ctl__glyph" aria-hidden="true">文</span><span class="ctl__label" data-i18n="lang_name">中文</span></button>
+    <button class="ctl" id="soundToggle" aria-pressed="false" title="Sound"><span class="ctl__glyph" aria-hidden="true">♪</span><span class="ctl__label" data-i18n="sound_off">SOUND OFF</span></button>
+    <button class="ctl" id="flashToggle" aria-pressed="false" title="Reduce flashing"><span class="ctl__glyph" aria-hidden="true">✸</span><span class="ctl__label" data-i18n="flash_ok">FLASH OK</span></button>
+  </div>
+</header>
 
-<!-- The assigned timecard, shown after clock-in -->
+<!-- assigned timecard -->
 <div class="timecard" id="timecard" hidden>
   <div class="timecard__punch">●</div>
   <div class="timecard__body">
@@ -65,122 +66,103 @@
   </div>
 </div>
 
-<!-- ===== Dot navigation ===== -->
-<nav class="dotnav" id="dotnav" aria-label="Factory floor">
-  <a href="#press" data-copy="nav_press" data-short="01">The Press</a>
-  <a href="#wall" data-copy="nav_wall" data-short="02">The Wall</a>
-  <a href="#inklab" data-copy="nav_inklab" data-short="03">Ink Lab</a>
-  <a href="#screentest" data-copy="nav_screentest" data-short="04">Screen Test</a>
-  <a href="#epi" data-copy="nav_epi" data-short="05">E.P.I.</a>
-  <a href="#capsule" data-copy="nav_capsule" data-short="06">Time Capsule</a>
-  <a href="#gallery" data-copy="nav_gallery" data-short="07">Drying Rack</a>
-  <a href="#about" data-copy="nav_about" data-short="08">About</a>
-</nav>
+<!-- prev / next room -->
+<button class="roomarrow roomarrow--prev" id="prevRoom" aria-label="Previous room">‹</button>
+<button class="roomarrow roomarrow--next" id="nextRoom" aria-label="Next room">›</button>
 
-<main id="main">
+<main id="stage">
 
-  <!-- ============ 00 · CLOCK IN ============ -->
-  <section class="section section--clockin" id="clockin" aria-labelledby="clockinTitle">
+  <!-- ============ CLOCK IN (landing) ============ -->
+  <section class="view view--clockin is-active" id="clockin" data-zone="default" aria-labelledby="clockinTitle">
     <div class="clockin__stage">
-      <p class="kicker">231 East 47th Street · New York · Open 24 Hours</p>
+      <p class="kicker" data-i18n="tagline_address">231 East 47th Street · New York · Open 24 Hours</p>
       <h1 class="megatitle" id="clockinTitle" data-mis>
         <span class="megatitle__line" data-text="THE">THE</span>
         <span class="megatitle__line megatitle__line--silver" data-text="SILVER">SILVER</span>
         <span class="megatitle__line" data-text="FACTORY">FACTORY</span>
       </h1>
-      <p class="clockin__sub" data-copy="clockin_sub">A machine you operate. Pull the ink. Multiply yourself. Clock out with your edition.</p>
+      <p class="clockin__sub" data-i18n="clockin_sub">A machine you operate. Pull the ink. Multiply yourself. Clock out with your edition.</p>
       <button class="punchclock" id="punchclock">
         <span class="punchclock__lever" aria-hidden="true"></span>
         <span class="punchclock__face">
           <span class="punchclock__time" id="punchTime">--:--</span>
-          <span class="punchclock__cta" data-copy="clockin_button">▸ CLOCK IN</span>
+          <span class="punchclock__cta" data-i18n="clockin_button">▸ CLOCK IN</span>
         </span>
       </button>
-      <p class="clockin__fineprint">Everything you make is made in your browser. Nothing leaves your device.</p>
+      <p class="clockin__fineprint" data-i18n="clockin_fineprint">Everything you make is made in your browser. Nothing leaves your device.</p>
     </div>
-    <div class="scrollcue" aria-hidden="true"><span>PULL DOWN</span><i></i></div>
   </section>
 
-  <!-- ============ 01 · THE PRESS (signature) ============ -->
-  <section class="section section--press" id="press" data-zone="press" aria-labelledby="pressTitle">
-    <header class="sec-head">
+  <!-- ============ 01 · THE PRESS ============ -->
+  <section class="view view--press" id="press" data-zone="press" aria-labelledby="pressTitle">
+    <header class="view-head">
       <span class="sec-num">01</span>
-      <h2 class="sec-title" data-mis data-copy="press_title" data-text="THE PRESS">THE PRESS</h2>
-      <p class="sec-lead" data-copy="press_hint">Load an ink. Then drag the squeegee straight down the screen — slow & firm floods solid ink, fast & loose leaves it streaky. Pull again in a new colour. Let it go a little off-register. That’s the point.</p>
+      <h2 class="view-title" id="pressTitle" data-mis data-i18n="press_title" data-text="THE PRESS">THE PRESS</h2>
+      <p class="view-lead" data-i18n="press_hint">Load an ink. Then drag the squeegee straight down the screen.</p>
     </header>
-
     <div class="press">
-      <!-- Subject picker -->
       <div class="press__subjects" role="group" aria-label="Choose a subject">
-        <span class="press__subjects-label" data-copy="press_subjects_label">SUBJECT</span>
+        <span class="press__subjects-label" data-i18n="press_subjects_label">SUBJECT</span>
         <div class="subjectrow" id="subjectRow"></div>
         <div class="press__io">
-          <label class="minibtn" for="uploadInput">⬆ UPLOAD</label>
+          <label class="minibtn" for="uploadInput" data-i18n="press_upload">⬆ UPLOAD</label>
           <input id="uploadInput" type="file" accept="image/*" hidden />
-          <button class="minibtn" id="webcamBtn">◉ WEBCAM</button>
+          <button class="minibtn" id="webcamBtn" data-i18n="press_webcam">◉ WEBCAM</button>
         </div>
       </div>
-
-      <!-- The press bed -->
       <div class="press__bed" id="pressBed">
         <div class="press__frame" id="pressFrame">
           <canvas class="press__paper" id="pressCanvas" width="900" height="900" aria-label="Your silkscreen print"></canvas>
           <div class="press__mesh" aria-hidden="true"></div>
-          <!-- the squeegee bar the user drags -->
           <div class="squeegee" id="squeegee" role="slider" tabindex="0" aria-label="Squeegee — drag down to print, or use arrow keys" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <div class="squeegee__grip"></div>
             <div class="squeegee__blade"></div>
           </div>
-          <!-- first-run ghost-hand hint -->
           <div class="ghosthand" id="ghostHand" aria-hidden="true">
             <span class="ghosthand__icon">✋</span>
             <span class="ghosthand__say">drag me down</span>
           </div>
           <div class="press__status" id="pressStatus" aria-live="polite"></div>
         </div>
-
-        <!-- ink rack -->
         <div class="inkrack" id="inkRack" role="group" aria-label="Ink rack"></div>
       </div>
-
-      <!-- press controls -->
       <div class="press__controls">
-        <button class="bigbtn" id="autoPullBtn" title="Let the machine pull it">▶ MACHINE PULL</button>
-        <button class="bigbtn bigbtn--ghost" id="clearBtn" data-copy="press_clear">↺ FRESH PAPER</button>
-        <button class="bigbtn bigbtn--accent" id="downloadBtn" data-copy="press_download">⬇ DOWNLOAD</button>
-        <button class="bigbtn bigbtn--accent" id="rackBtn">📌 PIN TO RACK</button>
+        <button class="bigbtn" id="autoPullBtn" data-i18n="press_machine">▶ MACHINE PULL</button>
+        <button class="bigbtn bigbtn--ghost" id="clearBtn" data-i18n="press_clear">↺ FRESH PAPER</button>
+        <button class="bigbtn bigbtn--accent" id="downloadBtn" data-i18n="press_download">⬇ DOWNLOAD</button>
+        <button class="bigbtn bigbtn--accent" id="rackBtn" data-i18n="press_pin">📌 PIN TO RACK</button>
       </div>
       <p class="press__quote" id="pressQuote" aria-live="polite"></p>
     </div>
   </section>
 
-  <!-- ============ 02 · THE WALL (repetition) ============ -->
-  <section class="section section--wall" id="wall" data-zone="wall" aria-labelledby="wallTitle">
-    <header class="sec-head">
+  <!-- ============ 02 · THE WALL ============ -->
+  <section class="view view--wall" id="wall" data-zone="wall" aria-labelledby="wallTitle">
+    <header class="view-head">
       <span class="sec-num">02</span>
-      <h2 class="sec-title" data-mis data-copy="wall_title" data-text="THE WALL">THE WALL</h2>
-      <p class="sec-lead" data-copy="wall_hint">One image is never enough. Feed your print into the conveyor and watch it multiply, every cell a different colourway — the Marilyn diptych logic. Hover a tile to knock it off-register.</p>
+      <h2 class="view-title" id="wallTitle" data-mis data-i18n="wall_title" data-text="THE WALL">THE WALL</h2>
+      <p class="view-lead" data-i18n="wall_hint">One image is never enough.</p>
     </header>
     <div class="wall">
       <div class="wall__controls">
         <label class="slider">
-          <span id="wallDensityLabel" data-copy="wall_density">DENSITY</span>
+          <span id="wallDensityLabel" data-i18n="wall_density">DENSITY</span>
           <input type="range" id="wallDensity" min="2" max="6" value="4" step="1" aria-labelledby="wallDensityLabel" aria-describedby="wallDensityOut" />
           <output id="wallDensityOut" aria-live="polite">4 × 4</output>
         </label>
-        <button class="minibtn" id="wallShuffle">⟳ RECOLOUR ALL</button>
-        <button class="minibtn" id="wallUsePrint">⮌ USE MY PRINT</button>
+        <button class="minibtn" id="wallShuffle" data-i18n="wall_recolour">⟳ RECOLOUR ALL</button>
+        <button class="minibtn" id="wallUsePrint" data-i18n="wall_useprint">⮌ USE MY PRINT</button>
       </div>
       <div class="wall__grid" id="wallGrid" aria-label="Repetition grid"></div>
     </div>
   </section>
 
   <!-- ============ 03 · INK LAB ============ -->
-  <section class="section section--inklab" id="inklab" data-zone="inklab" aria-labelledby="inklabTitle">
-    <header class="sec-head">
+  <section class="view view--inklab" id="inklab" data-zone="inklab" aria-labelledby="inklabTitle">
+    <header class="view-head">
       <span class="sec-num">03</span>
-      <h2 class="sec-title" data-mis data-copy="inklab_title" data-text="INK LAB">INK LAB</h2>
-      <p class="sec-lead" data-copy="inklab_hint">Drag one ink blob onto another on the slab. They smear into a new fluorescent — the Factory names it. Mix it onto the rack and print Warhols in your own colours.</p>
+      <h2 class="view-title" id="inklabTitle" data-mis data-i18n="inklab_title" data-text="INK LAB">INK LAB</h2>
+      <p class="view-lead" data-i18n="inklab_hint">Drag one ink blob onto another on the slab.</p>
     </header>
     <div class="inklab">
       <div class="inklab__slab" id="inkSlab" aria-label="Mixing slab">
@@ -190,22 +172,22 @@
         <div class="inklab__result" id="inkResult" hidden>
           <div class="inklab__chip" id="inkChip"></div>
           <div class="inklab__name" id="inkName">—</div>
-          <button class="minibtn" id="inkAddBtn">＋ ADD TO RACK</button>
+          <button class="minibtn" id="inkAddBtn" data-i18n="inklab_add">＋ ADD TO RACK</button>
         </div>
       </div>
       <div class="inklab__palette">
-        <p class="mono small">PICK TWO TO MIX</p>
+        <p class="mono small" data-i18n="inklab_pick">PICK TWO TO MIX</p>
         <div class="inklab__swatches" id="inkSwatches"></div>
       </div>
     </div>
   </section>
 
   <!-- ============ 04 · SCREEN TEST ============ -->
-  <section class="section section--screentest" id="screentest" data-zone="screentest" aria-labelledby="stTitle">
-    <header class="sec-head">
+  <section class="view view--screentest" id="screentest" data-zone="screentest" aria-labelledby="stTitle">
+    <header class="view-head">
       <span class="sec-num">04</span>
-      <h2 class="sec-title" data-mis data-copy="screentest_title" data-text="SCREEN TEST">SCREEN TEST</h2>
-      <p class="sec-lead" data-copy="screentest_idle_hint">Warhol filmed 472 silent portraits and dared the sitter not to move. So: do nothing. Stop moving your mouse, and the Factory rewards your stillness in colour.</p>
+      <h2 class="view-title" id="stTitle" data-mis data-i18n="screentest_title" data-text="SCREEN TEST">SCREEN TEST</h2>
+      <p class="view-lead" data-i18n="screentest_idle_hint">Do nothing. Stay still. The Factory rewards your stillness.</p>
     </header>
     <div class="screentest">
       <div class="screentest__reel" id="stReel">
@@ -216,32 +198,28 @@
         <div class="screentest__idle" id="stIdle"><span>BE STILL</span></div>
       </div>
       <div class="screentest__controls">
-        <button class="minibtn" id="stWebcam" data-copy="screentest_webcam">◉ ROLL CAMERA</button>
-        <label class="minibtn" for="stUpload" data-copy="screentest_upload">⬆ UPLOAD A FACE</label>
+        <button class="minibtn" id="stWebcam" data-i18n="screentest_webcam">◉ ROLL CAMERA</button>
+        <label class="minibtn" for="stUpload" data-i18n="screentest_upload">⬆ UPLOAD A FACE</label>
         <input id="stUpload" type="file" accept="image/*" hidden />
-        <button class="minibtn" id="stSave">★ KEEP THE STILL</button>
-        <p class="screentest__privacy mono small" data-copy="screentest_privacy">Camera stays on your device. Nothing is uploaded.</p>
+        <button class="minibtn" id="stSave" data-i18n="screentest_save">★ KEEP THE STILL</button>
+        <p class="screentest__privacy mono small" data-i18n="screentest_privacy">Camera stays on your device.</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ 05 · E.P.I. (the music room) ============ -->
-  <section class="section section--epi" id="epi" data-zone="epi" aria-labelledby="epiTitle">
+  <!-- ============ 05 · E.P.I. ============ -->
+  <section class="view view--epi" id="epi" data-zone="epi" aria-labelledby="epiTitle">
     <canvas class="epi__viz" id="epiViz" aria-hidden="true"></canvas>
-    <header class="sec-head">
+    <header class="view-head">
       <span class="sec-num">05</span>
-      <h2 class="sec-title" data-mis data-copy="epi_title" data-text="EXPLODING PLASTIC INEVITABLE">EXPLODING PLASTIC INEVITABLE</h2>
-      <p class="sec-lead" data-copy="epi_hint">The Velvet Underground &amp; Nico played under Andy’s lights. Peel the banana to start the drone — the room reacts to the sound. No files, all synthesised.</p>
+      <h2 class="view-title" id="epiTitle" data-mis data-i18n="epi_title" data-text="EXPLODING PLASTIC INEVITABLE">EXPLODING PLASTIC INEVITABLE</h2>
+      <p class="view-lead" data-i18n="epi_hint">Peel the banana to start the drone — the room reacts to the sound.</p>
     </header>
     <div class="epi">
       <div class="banana" id="banana" role="button" tabindex="0" aria-label="Peel the banana to start the music">
         <svg viewBox="0 0 220 360" width="220" height="360" aria-hidden="true">
-          <defs>
-            <clipPath id="peelClip"><rect id="peelRect" x="0" y="0" width="220" height="360"></rect></clipPath>
-          </defs>
-          <!-- peeled (inside) banana, revealed underneath -->
+          <defs><clipPath id="peelClip"><rect id="peelRect" x="0" y="0" width="220" height="360"></rect></clipPath></defs>
           <path class="banana__flesh" d="M150 20 C200 90 205 230 120 330 C70 388 18 330 40 300 C120 250 150 150 120 70 C110 40 130 18 150 20 Z" />
-          <!-- the yellow skin, clipped away as you peel -->
           <g clip-path="url(#peelClip)">
             <path class="banana__skin" d="M150 20 C200 90 205 230 120 330 C70 388 18 330 40 300 C120 250 150 150 120 70 C110 40 130 18 150 20 Z" />
             <path class="banana__seam" d="M150 28 C190 95 196 225 118 320" />
@@ -251,28 +229,24 @@
         <span class="banana__hint">↑ peel ↑</span>
       </div>
       <div class="epi__panel">
-        <button class="bigbtn bigbtn--accent" id="epiToggle">▶ DROP THE NEEDLE</button>
-        <label class="toggle"><input type="checkbox" id="epiReduceFlash" /> <span data-copy="epi_reduce_flashing">reduce flashing</span></label>
+        <button class="bigbtn bigbtn--accent" id="epiToggle" data-i18n="epi_toggle">▶ DROP THE NEEDLE</button>
+        <label class="toggle"><input type="checkbox" id="epiReduceFlash" /> <span data-i18n="epi_reduce_flashing">reduce flashing</span></label>
         <p class="mono small epi__credit">after “The Velvet Underground &amp; Nico”, 1967</p>
       </div>
     </div>
   </section>
 
   <!-- ============ 06 · TIME CAPSULE ============ -->
-  <section class="section section--capsule" id="capsule" data-zone="capsule" aria-labelledby="capTitle">
-    <header class="sec-head">
+  <section class="view view--capsule" id="capsule" data-zone="capsule" aria-labelledby="capTitle">
+    <header class="view-head">
       <span class="sec-num">06</span>
-      <h2 class="sec-title" data-mis data-copy="capsule_title" data-text="TIME CAPSULE No. 4">TIME CAPSULE No. 4</h2>
-      <p class="sec-lead" data-copy="capsule_hint">Warhol sealed 610 boxes of everyday junk and called them art. Tear the tape and rummage. Everything kept for a reason only he understood.</p>
+      <h2 class="view-title" id="capTitle" data-mis data-i18n="capsule_title" data-text="TIME CAPSULE No. 4">TIME CAPSULE No. 4</h2>
+      <p class="view-lead" data-i18n="capsule_hint">Tear the tape and rummage.</p>
     </header>
     <div class="capsule">
       <div class="capsule__box" id="capBox">
-        <div class="capsule__flaps">
-          <span class="flap flap--l"></span><span class="flap flap--r"></span>
-        </div>
-        <svg class="capsule__tape" id="capTape" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
-          <path id="tapePath" d="M6 60 H394" />
-        </svg>
+        <div class="capsule__flaps"><span class="flap flap--l"></span><span class="flap flap--r"></span></div>
+        <svg class="capsule__tape" id="capTape" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true"><path id="tapePath" d="M6 60 H394" /></svg>
         <span class="capsule__label mono">FRAGILE · A.W. · DO NOT OPEN</span>
         <span class="capsule__taphint">tear →</span>
       </div>
@@ -282,33 +256,46 @@
         <div class="capsule__card-name mono" id="capCardName"></div>
         <p class="capsule__card-prov" id="capCardProv"></p>
       </div>
-      <button class="minibtn capsule__reseal" id="capReseal" data-copy="capsule_reseal" hidden>⮌ RESEAL THE BOX</button>
+      <button class="minibtn capsule__reseal" id="capReseal" data-i18n="capsule_reseal" hidden>⮌ RESEAL THE BOX</button>
     </div>
   </section>
 
-  <!-- ============ 07 · DRYING RACK / GALLERY ============ -->
-  <section class="section section--gallery" id="gallery" data-zone="gallery" aria-labelledby="galTitle">
-    <header class="sec-head">
+  <!-- ============ 07 · THE WORKS (real pieces) ============ -->
+  <section class="view view--works" id="works" data-zone="works" aria-labelledby="worksTitle">
+    <header class="view-head">
       <span class="sec-num">07</span>
-      <h2 class="sec-title" data-mis data-copy="gallery_title" data-text="THE DRYING RACK">THE DRYING RACK</h2>
-      <p class="sec-lead">Everything you pull, shoot or seal pins up here to dry — kept on this device only. Clock out to take the whole contact sheet home.</p>
+      <h2 class="view-title" id="worksTitle" data-mis data-i18n="works_title" data-text="THE WORKS">THE WORKS</h2>
+      <p class="view-lead" data-i18n="works_hint">A study wall of the real works.</p>
+    </header>
+    <div class="works">
+      <div class="works__grid" id="worksGrid"></div>
+      <p class="works__disclaimer mono" id="worksDisclaimer" data-i18n="works_disclaimer"></p>
+    </div>
+  </section>
+
+  <!-- ============ 08 · DRYING RACK ============ -->
+  <section class="view view--gallery" id="gallery" data-zone="gallery" aria-labelledby="galTitle">
+    <header class="view-head">
+      <span class="sec-num">08</span>
+      <h2 class="view-title" id="galTitle" data-mis data-i18n="gallery_title" data-text="THE DRYING RACK">THE DRYING RACK</h2>
+      <p class="view-lead" data-i18n="gallery_hint">Everything you make pins up here to dry.</p>
     </header>
     <div class="gallery">
       <div class="gallery__line" aria-hidden="true"></div>
       <div class="gallery__rack" id="galleryRack"></div>
-      <p class="gallery__empty mono" id="galleryEmpty" data-copy="gallery_empty">Nothing on the rack yet. Go pull a print.</p>
+      <p class="gallery__empty mono" id="galleryEmpty" data-i18n="gallery_empty">Nothing on the rack yet.</p>
       <div class="gallery__controls">
-        <button class="bigbtn bigbtn--accent" id="clockoutBtn" data-copy="gallery_clockout">⬇ CLOCK OUT — EXPORT CONTACT SHEET</button>
-        <button class="bigbtn bigbtn--ghost" id="galleryClear" data-copy="gallery_clear">🗑 EMPTY THE RACK</button>
+        <button class="bigbtn bigbtn--accent" id="clockoutBtn" data-i18n="gallery_clockout">⬇ CLOCK OUT — EXPORT CONTACT SHEET</button>
+        <button class="bigbtn bigbtn--ghost" id="galleryClear" data-i18n="gallery_clear">🗑 EMPTY THE RACK</button>
       </div>
     </div>
   </section>
 
-  <!-- ============ 08 · ABOUT ============ -->
-  <section class="section section--about" id="about" data-zone="about" aria-labelledby="aboutTitle">
-    <header class="sec-head">
-      <span class="sec-num">08</span>
-      <h2 class="sec-title" data-mis data-copy="about_title" data-text="ABOUT THE FACTORY">ABOUT THE FACTORY</h2>
+  <!-- ============ 09 · ABOUT ============ -->
+  <section class="view view--about" id="about" data-zone="about" aria-labelledby="aboutTitle">
+    <header class="view-head">
+      <span class="sec-num">09</span>
+      <h2 class="view-title" id="aboutTitle" data-mis data-i18n="about_title" data-text="ABOUT THE FACTORY">ABOUT THE FACTORY</h2>
     </header>
     <div class="about" id="aboutBody">
       <div class="about__intro" id="aboutIntro"></div>
@@ -321,17 +308,28 @@
 
 </main>
 
-<!-- Scrolling marquee of Warhol lines -->
+<!-- work detail modal -->
+<div class="workmodal" id="workModal" hidden role="dialog" aria-modal="true" aria-label="Work detail">
+  <div class="workmodal__backdrop" id="workModalBackdrop"></div>
+  <div class="workmodal__panel">
+    <button class="workmodal__close" id="workModalClose" aria-label="Close">✕</button>
+    <div class="workmodal__img" id="workModalImg"></div>
+    <div class="workmodal__meta">
+      <h3 class="workmodal__title" id="workModalTitle"></h3>
+      <p class="workmodal__sub mono" id="workModalSub"></p>
+      <p class="workmodal__note" id="workModalNote"></p>
+      <a class="workmodal__src mono" id="workModalSrc" target="_blank" rel="noopener noreferrer" data-i18n="works_source">view source ↗</a>
+      <p class="workmodal__disc mono" data-i18n="works_disclaimer"></p>
+    </div>
+  </div>
+</div>
+
+<!-- slogans ticker -->
 <div class="marquee" id="marquee" aria-hidden="true"><div class="marquee__track" id="marqueeTrack"></div></div>
 
-<footer class="footer">
-  <p class="mono">THE SILVER FACTORY · an unofficial interactive tribute to Andy Warhol · made entirely in your browser</p>
-</footer>
-
-<!-- GSAP (enhancement only — the site works without it) -->
+<!-- GSAP (enhancement only) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
-
 <script type="module" src="js/main.js"></script>
 </body>
 </html>

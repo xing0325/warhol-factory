@@ -123,38 +123,38 @@ export function initScreenTest(app){
     }
   }
 
-  // visibility -> run the draw loop and idle timer only when on screen
-  const io = new IntersectionObserver((ents) => {
-    ents.forEach(e => {
-      visible = e.isIntersecting;
-      lastActivity = performance.now();
-      if (visible){
-        if (!raf) raf = requestAnimationFrame(draw);
-        if (!idleTimer && !reduced) idleTimer = setInterval(checkIdle, 500);
-      } else if (idleTimer){
-        clearInterval(idleTimer); idleTimer = null;
-      }
-    });
-  }, { threshold: 0.15 });
-  io.observe(reel);
+  // run the draw loop and idle timer only while this room is open
+  app.bus.on('view:show', (id) => {
+    if (id !== 'screentest') return;
+    visible = true; lastActivity = performance.now();
+    if (!raf) raf = requestAnimationFrame(draw);
+    if (!idleTimer && !reduced) idleTimer = setInterval(checkIdle, 500);
+  });
+  app.bus.on('view:hide', (id) => {
+    if (id !== 'screentest') return;
+    visible = false;
+    if (idleTimer){ clearInterval(idleTimer); idleTimer = null; }
+    if (raf){ cancelAnimationFrame(raf); raf = null; }
+  });
 
   // webcam
   on(webcamBtn, 'click', async () => {
     app.audio.unlock();
     if (video){ // stop
-      video.srcObject.getTracks().forEach(t=>t.stop()); video=null; webcamBtn.textContent='◉ ROLL CAMERA'; return;
+      video.srcObject.getTracks().forEach(t=>t.stop()); video=null; webcamBtn.textContent=app.t('screentest_webcam'); return;
     }
     try{
       const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
       const v = document.createElement('video');
       v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
       v.srcObject=stream; v.playsInline=true; v.muted=true; await v.play();
-      video = v; webcamBtn.textContent='◼ STOP CAMERA';
+      video = v; webcamBtn.textContent=app.t('st_webcam_stop');
     }catch(err){
-      const msg = err && err.name==='NotAllowedError' ? '✕ PERMISSION DENIED'
-                : err && err.name==='NotFoundError' ? '✕ NO CAMERA FOUND'
-                : err && err.name==='NotReadableError' ? '✕ CAMERA IN USE' : '✕ NO CAMERA';
-      webcamBtn.textContent=msg; setTimeout(()=>webcamBtn.textContent='◉ ROLL CAMERA',2000);
+      webcamBtn.textContent = app.t(
+        err && err.name==='NotAllowedError' ? 'cam_denied'
+        : err && err.name==='NotFoundError' ? 'cam_notfound'
+        : err && err.name==='NotReadableError' ? 'cam_inuse' : 'cam_none');
+      setTimeout(()=>webcamBtn.textContent=app.t('screentest_webcam'),2000);
     }
   });
   on(uploadInput, 'change', (e) => {
@@ -170,8 +170,11 @@ export function initScreenTest(app){
     const serial = app.nextSerial();
     app.rack.add({ kind:'screentest', src: toThumb(out,260), title:'Screen Test', serial, ts: app.stamp() });
     app.audio.kachunk();
-    saveBtn.textContent='★ KEPT'; setTimeout(()=>saveBtn.textContent='★ KEEP THE STILL',1100);
+    saveBtn.textContent='★ KEPT'; setTimeout(()=>saveBtn.textContent=app.t('screentest_save'),1100);
   });
+
+  // re-localise the webcam toggle label on language switch
+  app.bus.on('lang', () => { webcamBtn.textContent = video ? app.t('st_webcam_stop') : app.t('screentest_webcam'); });
 
   return {};
 }

@@ -42,13 +42,13 @@ export function initEPI(app){
   function start(){
     analyser = app.audio.startDrone();
     if (analyser) freq = new Uint8Array(analyser.frequencyBinCount);
-    toggle.textContent = '◼ STOP THE MUSIC';
+    toggle.textContent = app.t('epi_stop');
     banana.querySelector('.banana__hint').textContent = '♪ playing ♪';
     if (!raf) raf = requestAnimationFrame(loop);
   }
   function stop(){
     app.audio.stopDrone();
-    toggle.textContent = '▶ DROP THE NEEDLE';
+    toggle.textContent = app.t('epi_toggle');
     banana.querySelector('.banana__hint').textContent = '↑ peel ↑';
   }
   on(toggle, 'click', () => { app.audio.unlock(); if (app.audio.isDroning()) stop(); else { setPeel(1); } });
@@ -57,8 +57,8 @@ export function initEPI(app){
   const blobs = Array.from({length:7}, (_,i)=>({ x:Math.random(), y:Math.random(), c: INK_LIST[i%INK_LIST.length], ph:Math.random()*7 }));
   let t = 0;
   function loop(){
+    if (!visible){ raf = null; return; }
     raf = requestAnimationFrame(loop);
-    if (!visible) return;
     t += 0.016;
     let energy = 0;
     if (analyser && freq){ analyser.getByteFrequencyData(freq); for (let i=0;i<freq.length;i++) energy += freq[i]; energy /= (freq.length*255); }
@@ -93,10 +93,15 @@ export function initEPI(app){
     } }
   }
 
-  const io = new IntersectionObserver((ents) => {
-    ents.forEach(e => { visible = e.isIntersecting; if (visible && !raf) raf = requestAnimationFrame(loop); });
-  }, { threshold: 0.05 });
-  io.observe(section);
+  app.bus.on('view:show', (id) => {
+    if (id !== 'epi') return;
+    visible = true; resize();
+    if (!raf) raf = requestAnimationFrame(loop);
+  });
+  app.bus.on('view:hide', (id) => { if (id === 'epi'){ visible = false; if (raf){ cancelAnimationFrame(raf); raf = null; } } });
+
+  // keep the toggle label in the right language while the drone plays
+  app.bus.on('lang', () => { toggle.textContent = app.audio.isDroning() ? app.t('epi_stop') : app.t('epi_toggle'); });
 
   return {};
 }

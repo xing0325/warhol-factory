@@ -333,7 +333,7 @@ export function initPress(app){
     app.rack.add({ kind:'print', src:thumb, title:'Silkscreen', serial, ts: app.stamp() });
     app.audio.kachunk();
     rackBtn.textContent = '✓ PINNED';
-    setTimeout(()=> rackBtn.textContent = '📌 PIN TO RACK', 1200);
+    setTimeout(()=> rackBtn.textContent = app.t('press_pin'), 1200);
   }
 
   /* ---------- upload / webcam ---------- */
@@ -344,7 +344,9 @@ export function initPress(app){
     img.src = URL.createObjectURL(file);
     app.audio.plip();
   });
+  let webcamArmed = false;
   on(webcamBtn, 'click', async () => {
+    if (webcamArmed) return;            // the grab() handler takes the second click
     app.audio.unlock();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode:'user' }, audio:false });
@@ -352,24 +354,28 @@ export function initPress(app){
       v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
       v.srcObject = stream; v.playsInline = true; v.muted = true;
       await v.play();
-      webcamBtn.textContent = '◉ SNAP!';
+      webcamArmed = true;
+      webcamBtn.textContent = app.t('press_snap');
       const grab = () => {
+        webcamArmed = false;
         loadSeps(buildSeparations(prepareFromImage(v, SEP)));
         stream.getTracks().forEach(t=>t.stop());
-        webcamBtn.textContent = '◉ WEBCAM';
+        webcamBtn.textContent = app.t('press_webcam');
         webcamBtn.removeEventListener('click', grab);
       };
-      // give them a moment to pose, then snap on next click
       webcamBtn.addEventListener('click', grab, { once:true });
     } catch(err){
-      const msg = err && err.name === 'NotAllowedError' ? '✕ PERMISSION DENIED'
-                : err && err.name === 'NotFoundError' ? '✕ NO CAMERA FOUND'
-                : err && err.name === 'NotReadableError' ? '✕ CAMERA IN USE'
-                : '✕ NO CAMERA';
-      webcamBtn.textContent = msg;
-      setTimeout(()=> webcamBtn.textContent = '◉ WEBCAM', 2000);
+      webcamArmed = false;
+      webcamBtn.textContent = app.t(
+        err && err.name === 'NotAllowedError' ? 'cam_denied'
+        : err && err.name === 'NotFoundError' ? 'cam_notfound'
+        : err && err.name === 'NotReadableError' ? 'cam_inuse' : 'cam_none');
+      setTimeout(()=> webcamBtn.textContent = app.t('press_webcam'), 2000);
     }
   });
+
+  // re-localise stateful labels when the language switches
+  app.bus.on('lang', () => { if (webcamArmed) webcamBtn.textContent = app.t('press_snap'); updateStatus(); });
 
   /* ---------- boot ---------- */
   renderSubjects('soup');

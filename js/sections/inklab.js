@@ -105,7 +105,7 @@ export function initInkLab(app){
     renderSwatches();
     addBtn.textContent = '✓ ON THE RACK';
     app.audio.chaching();
-    setTimeout(()=>{ addBtn.textContent='＋ ADD TO RACK'; result.hidden = true; mixed=null; lastName=''; sctx.clearRect(0,0,smear.width,smear.height); }, 1100);
+    setTimeout(()=>{ addBtn.textContent=app.t('inklab_add'); result.hidden = true; mixed=null; lastName=''; sctx.clearRect(0,0,smear.width,smear.height); }, 1100);
   });
 
   function makeKeys(blob, which){

@@ -63,19 +63,16 @@ export function initWall(app){
   on(dens, 'input', build);
   on(shuffleBtn, 'click', () => { usePrint=false; usePrintBtn.classList.remove('is-active'); build(); app.audio.kachunk(); });
   on(usePrintBtn, 'click', () => {
-    if (!app.state.lastPrint){ usePrintBtn.textContent='⮌ PULL ONE FIRST'; setTimeout(()=>usePrintBtn.textContent='⮌ USE MY PRINT',1400); return; }
+    if (!app.state.lastPrint){ usePrintBtn.textContent=app.t('wall_pullfirst'); setTimeout(()=>usePrintBtn.textContent=app.t('wall_useprint'),1400); return; }
     usePrint = !usePrint; usePrintBtn.classList.toggle('is-active', usePrint); build(); app.audio.plip();
   });
 
-  app.bus.on('seps', build);
+  let built = false;
+  app.bus.on('seps', () => { if (built) build(); });
   app.bus.on('print', () => { /* keep current view; user can opt-in */ });
 
-  // build when first scrolled into view (cheaper) or immediately if seps exist
-  let built = false;
-  const io = new IntersectionObserver((ents) => {
-    ents.forEach(e => { if (e.isIntersecting && !built){ built = true; build(); } });
-  }, { rootMargin:'200px' });
-  io.observe(grid);
+  // build the first time the room is opened
+  app.bus.on('view:show', (id) => { if (id === 'wall'){ built = true; build(); } });
 
   return { build };
 }
