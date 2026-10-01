@@ -2,6 +2,8 @@
 
 > “In the future everyone will be world-famous for 15 minutes.” —— Andy Warhol
 
+**在线体验：** <https://xing0325.github.io/warhol-factory/>
+
 一个把安迪·沃霍尔的「银色工厂」做成**可操作机器**的互动网站：你不是浏览作品，而是**亲手拉刮板印一张丝网版画**、把它复制成重复墙、调出自己的荧光油墨、坐进试镜机、剥香蕉开音乐、撕开时间胶囊、逛真迹展厅，最后打卡下班把整张接触印样带走。
 
 打卡进厂后是**分房间导航**（顶部标签 + 左右翻页箭头 + `#/房间` 路由，不是一条瀑布流），并支持 **中／英切换**（世界级名言保留英文）。互动作品**全部在你浏览器里本地生成，数据不上传**。
@@ -45,6 +47,18 @@ python -m http.server 8123
 
 ```bash
 git add -A && git commit -m "update" && git push
+```
+
+## 仓库结构
+
+```text
+index.html       工厂入口与九个房间
+css/styles.css   视觉系统、布局与动效
+js/main.js       应用入口与房间编排
+js/core/         Canvas、音频与通用交互能力
+js/sections/     各房间的独立交互
+js/content.js    中英文内容
+js/works-data.js 真迹展厅资料
 ```
 
 ## 说明
